@@ -29,3 +29,6 @@ def generar_token(request):
                          "expire": ':v'})
     
     
+def generar_pago(request):
+    
+    pass
