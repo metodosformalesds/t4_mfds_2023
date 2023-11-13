@@ -48,6 +48,14 @@ class AdminCognito:
     
     
     def delete_user(self, name):
+        """Borra un usuario de cognito
+
+        Args:
+            name (str): Nombre de usuario a eliminar
+
+        Returns:
+            dict: status
+        """
         try:
             self.client.admin_delete_user(
                 UserPoolId=self.__user_pool_id,
@@ -61,27 +69,67 @@ class AdminCognito:
         except Exception as e:
             return {'error': str(e)}
         
+        
     def get_user_token(self, username, password):
         client = boto3.client('cognito-idp')
         try:
-            response = client.initiate_auth(
-                # AuthFlow='USER_PASSWORD_AUTH',
-                AuthParameters={
-                    'USERNAME': username,
-                    'PASSWORD': password
+            response = client.create_user_pool_client(
+                UserPoolId=self.__user_pool_id,
+                ClientName=username,
+                GenerateSecret=True,
+                RefreshTokenValidity=30,
+                AccessTokenValidity=30,
+                # IdTokenValidity=30,
+                TokenValidityUnits={
+                    'AccessToken': 'days',
+                    'IdToken': 'days',
+                    'RefreshToken': 'days'
                 },
-                # ClientId=app_client_id,
-                UserPoolId=self.__user_pool_id
+                ReadAttributes=[
+                    'string',
+                ],
+                WriteAttributes=[
+                    'string',
+                ],
+                ExplicitAuthFlows=[
+                    # 'ADMIN_NO_SRP_AUTH'|'CUSTOM_AUTH_FLOW_ONLY'|'USER_PASSWORD_AUTH'|'ALLOW_ADMIN_USER_PASSWORD_AUTH'|'ALLOW_CUSTOM_AUTH'|'ALLOW_USER_PASSWORD_AUTH'|'ALLOW_USER_SRP_AUTH'|'ALLOW_REFRESH_TOKEN_AUTH',
+                    'ALLOW_USER_PASSWORD_AUTH',
+                ],
+                SupportedIdentityProviders=[
+                    'string',
+                ],
+                CallbackURLs=[
+                    'string',
+                ],
+                LogoutURLs=[
+                    'string',
+                ],
+                DefaultRedirectURI='string',
+                AllowedOAuthFlows=[
+                    'client_credentials',
+                ],
+                AllowedOAuthScopes=[
+                    'string',
+                ],
+                AllowedOAuthFlowsUserPoolClient=True,
+                # AnalyticsConfiguration={
+                #     'ApplicationId': 'string',
+                #     'ApplicationArn': 'string',
+                #     'RoleArn': 'string',
+                #     'ExternalId': 'string',
+                #     'UserDataShared': True|False
+                # },
+                # PreventUserExistenceErrors='ENABLED',
+                # EnableTokenRevocation=True,
+                # EnablePropagateAdditionalUserContextData=True,
+                # AuthSessionValidity=123
             )
+            
+            return response
+            
         except client.exceptions.NotAuthorizedException:
             return {'error': 'Invalid username or password'}
         except client.exceptions.UserNotFoundException:
             return {'error': 'User not found'}
         except Exception as e:
             return {'error': str(e)}
-
-        return {
-            'access_token': response['AuthenticationResult']['AccessToken'],
-            'refresh_token': response['AuthenticationResult']['RefreshToken'],
-            'id_token': response['AuthenticationResult']['IdToken']
-        }
