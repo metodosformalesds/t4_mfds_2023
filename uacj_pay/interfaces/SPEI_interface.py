@@ -1,6 +1,6 @@
 from abc import ABC
 
-class TransferenciasInterface(ABC):
+class SPEIInterface(ABC):
     """
     Esta clase es la base de todas las operaciones que vayamos a realizar
     """
