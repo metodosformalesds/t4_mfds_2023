@@ -14,7 +14,7 @@ class SPEIInterface(ABC):
         raise NotImplementedError
     
     @abstractmethod
-    def transference(self, parameter_list):
+    def transferencia(self, parameter_list):
         raise NotImplementedError
 
     @abstractmethod 
