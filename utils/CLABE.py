@@ -24,7 +24,7 @@ def calcular_digito_verificador(cuenta):
   
   return 11 - residuo
 
-# Ejemplo con 16 digitos, sale 7 
-cuenta = "1234567812345678"
-digito_verificador = calcular_digito_verificador(cuenta)
-print(digito_verificador)
+# # Ejemplo con 16 digitos, sale 7 
+# cuenta = "1234567812345678"
+# digito_verificador = calcular_digito_verificador(cuenta)
+# print(digito_verificador)
