@@ -23,3 +23,4 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('token/', uacj_pay_views.generar_token)
 ]
+
