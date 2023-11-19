@@ -17,14 +17,17 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from utils import Pagos
 import uacj_pay.views as uacj_pay_views
 from uacj_pay.views import create_transfer, consultar_transferencia
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('token/', uacj_pay_views.generar_token),
+    path('payment/', Pagos.payment, name='payment'),
     
     #URLS para API transferencias
     path('api/create_transfer/', create_transfer, name='create_transfer'),
     path('api/consultar_transferencia/<str:transfer_id>/', consultar_transferencia, name='consultar_transferencia'),
 ]
+
