@@ -10,11 +10,15 @@ dynamodb = boto3.resource('dynamodb')
 table_name = 'UACJ-PAY_Cuenta_Negocio'  # Tabla para verificar el token
 admin_table_name = 'Transfers'  # Tabla donde se insertarán los datos de transferencia
 client_table_name = 'UACJ-PAY_Cuenta_Cliente'  # Tabla de cuentas de cliente
+codi_table_name = 'CODI' # Tabla de CODI 
+
 
 # Asegúrate de que las tablas existan antes de continuar
 dynamodb.meta.client.get_waiter('table_exists').wait(TableName=table_name)
 dynamodb.meta.client.get_waiter('table_exists').wait(TableName=admin_table_name)
 dynamodb.meta.client.get_waiter('table_exists').wait(TableName=client_table_name)
+# TODO: creacion de tabla de codi 
+# dynamodb.meta.client.get_waiter('table_exists').wait(TableName=codi_table_name)
 
 class TransferenciasImplementacion:
     @staticmethod
@@ -94,19 +98,31 @@ class TransferenciasImplementacion:
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
 
-    def __generate_pay_link(self, account, ammount:float=0, concept='No concept', reference='1')->str:
+    def __generate_pay_link(self, payment_information)->str:
         PAYMENT_URL = 'codi_pay'
-        params = f"a{ammount}ac{account}c{concept}r{reference}"
+        codi_id = str(uuid.uuid4())
         
-        return reverse(PAYMENT_URL, args=(id))
+        codi_table = dynamodb.Table(codi_table_name)
+        codi_table.put_item(Item=payment_information)
+        return reverse(PAYMENT_URL, args=(codi_id))
         pass
     
     #Override
-    def codi(self, payment_information)->str:
+    def codi(self, payment_information)->JsonResponse:
 
         if not self.verify_account_exists(payment_information.account):
             return JsonResponse({'error': 'La cuenta clabe no existe o es invalida'})
-        link:str = self.__generate_pay_link(**payment_information)
+        link:str = self.__generate_pay_link(payment_information)
         return JsonResponse({'codi':link})
         raise NotImplementedError
-        pass  
+        pass
+
+
+    def handle_codi(self, codi_id):
+        codi_table = dynamodb.Table(codi_table_name)
+        try:
+            response = transfers_table.get_item(Key={'transfer_id': codi_id})
+            codi_data = response.get('Item')
+            return codi_data
+        except Exception as e:
+            raise Exception(e)

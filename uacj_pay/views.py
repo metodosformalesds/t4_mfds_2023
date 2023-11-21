@@ -56,6 +56,7 @@ def consultar_transferencia(request, transfer_id):
 
 def codi(request):
     if request.method== 'GET':
+        return transferencia_impl.codi(request.body)
         pass
     else:
         return JsonResponse({'error':'Invalid request method'}, status=400)
