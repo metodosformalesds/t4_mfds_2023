@@ -3,9 +3,7 @@ from interfaces.SPEI_interface import SPEIInterfaces
 class PaymentInformation:
     def __init__(self, amount:float, name:str, account:str, institution:str, concept:str, reference:str):
         self.amount = amount
-        self.name = name
         self.account = account
-        self.institution = institution
         self.concept = concept
         self.reference = reference
 

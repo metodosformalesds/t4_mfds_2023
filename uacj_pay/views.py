@@ -3,6 +3,7 @@ import json
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from .forms import PayForm
 
 # AWS modules
 import boto3
@@ -11,6 +12,7 @@ import boto3
 #from utils.usuario import User
 from utils.Transferencia import TransferenciasImplementacion
 
+transferencia_impl = TransferenciasImplementacion()
 """
     * Registro de usuario con aws cognito
     * Almacenar usuario en dynamoDB (lambda)
@@ -40,7 +42,6 @@ def generar_pago(request):
 def create_transfer(request):
     if request.method == 'POST':
         data = json.loads(request.body)
-        transferencia_impl = TransferenciasImplementacion()
         return transferencia_impl.transferencia(data)
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=400)
@@ -48,7 +49,22 @@ def create_transfer(request):
 @csrf_exempt
 def consultar_transferencia(request, transfer_id):
     if request.method == 'GET':
-        transferencia_impl = TransferenciasImplementacion()
         return transferencia_impl.consultar_transferencia(transfer_id)
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+def codi(request):
+    if request.method== 'GET':
+        pass
+    else:
+        return JsonResponse({'error':'Invalid request method'}, status=400)
+
+def codi_pay(request, codi_id):
+    if request.method == 'GET':
+        form = PayForm()
+        return render('codi.html', context={'codi':codi_id, 'form':form})
+    elif request.method == 'POST':
+        return transferencia_impl.codi_pay(codi_id, request.body)
+        pass
+    else:
+        return JsonResponse({'error':'Invalid request method'}, status=400)
