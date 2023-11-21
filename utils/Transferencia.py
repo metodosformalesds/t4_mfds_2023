@@ -1,4 +1,3 @@
-import json
 from datetime import datetime
 from decimal import Decimal
 import uuid
@@ -34,7 +33,7 @@ class TransferenciasImplementacion:
         except Exception as e:
             return {'error': str(e)}
 
-    def verify_account_exists(self, clabe):
+    def verify_account_exists(self, clabe) -> bool:
         try:
             # Utiliza la tabla "UACJ-PAY_Cuenta_Cliente" para verificar la existencia de la cuenta
             client_table = dynamodb.Table(client_table_name)
@@ -94,3 +93,20 @@ class TransferenciasImplementacion:
 
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
+
+    def __generate_pay_link(self, account, ammount:float=0, concept='No concept', reference='1')->str:
+        PAYMENT_URL = 'codi_pay'
+        params = f"a{ammount}ac{account}c{concept}r{reference}"
+        
+        return reverse(PAYMENT_URL, args=(id))
+        pass
+    
+    #Override
+    def codi(self, payment_information)->str:
+
+        if not self.verify_account_exists(payment_information.account):
+            return JsonResponse({'error': 'La cuenta clabe no existe o es invalida'})
+        link:str = self.__generate_pay_link(**payment_information)
+        return JsonResponse({'codi':link})
+        raise NotImplementedError
+        pass  
