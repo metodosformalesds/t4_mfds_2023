@@ -24,7 +24,7 @@ from uacj_pay.views import create_transfer, consultar_transferencia
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('token/', uacj_pay_views.generar_token),
-    path('payment/', Pagos.payment, name='payment'),
+    path('payment/', Pagos.Payment, name='payment'),
     
     #URLS para API transferencias
     path('api/create_transfer/', create_transfer, name='create_transfer'),
