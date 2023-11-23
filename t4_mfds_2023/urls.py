@@ -30,6 +30,6 @@ urlpatterns = [
     path('api/create_transfer/', create_transfer, name='create_transfer'),
     path('api/consultar_transferencia/<str:transfer_id>/', consultar_transferencia, name='consultar_transferencia'),
     path('api/codi/create/', codi, name='codi'),
-    path('api/codi/pay/<str:transfer_id>', codi_pay, name='codi_pay')
+    path('api/codi/pay/<str:codi_id>', codi_pay, name='codi_pay')
 ]
 
