@@ -1,6 +1,6 @@
 from abc import ABC
 
-class TransferenciasInterface(ABC):
+class SPEIInterface(ABC):
     """
     Esta clase es la base de todas las operaciones que vayamos a realizar
     """
@@ -10,9 +10,14 @@ class TransferenciasInterface(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def pago(self, parameter_list):
+    def payment(self, parameter_list):
         raise NotImplementedError
     
     @abstractmethod
     def transferencia(self, parameter_list):
+        raise NotImplementedError
+
+    @abstractmethod 
+    @staticmethod
+    def validate_account(self, parameter_list):
         raise NotImplementedError
